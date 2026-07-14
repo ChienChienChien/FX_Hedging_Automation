@@ -1,3 +1,5 @@
+**繁體中文** | [English](architecture_en.md)
+
 # 外匯風險自動拋轉系統｜架構圖
 
 ## 整體架構
