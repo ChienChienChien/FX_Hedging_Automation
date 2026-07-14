@@ -57,6 +57,8 @@ flowchart TB
     F --> H["Run logs and exception alerts"]
 ```
 
+See the [detailed system architecture](docs/architecture_en.md) for component responsibilities and the FX event lifecycle.
+
 ## My Contributions
 
 - Defined exposure scope, events, and calculation rules with the risk-management team.
