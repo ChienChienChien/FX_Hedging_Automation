@@ -1,79 +1,79 @@
-**繁體中文** | [English](README_EN.md)
+**English** | [繁體中文](README_ZH-TW.md)
 
-# 外匯風險自動拋轉系統
+# FX Risk Position Automation
 
-建立一致且可追溯的外匯風險管理流程，讓銷售、採購與財務事件能即時反映於風險部位，提升風險認列、結清與對帳的準確性。系統整合合約、採購、發票、匯率及既有部位資料，自動處理部位建立、調整與結清，每月涵蓋約 **1.5 億美元**外匯風險。
+Built a standardized and auditable FX risk workflow that reflects sales, procurement, and accounting events in position records, improving the accuracy of exposure recognition, settlement, and reconciliation. The system integrates contracts, purchase orders, invoices, market rates, and existing positions to automate position creation, adjustment, and settlement for approximately **USD 150 million in monthly FX exposure**.
 
-## 專案概況
+## Project Overview
 
-| 項目 | 說明 |
+| Item | Description |
 |---|---|
-| 業務範圍 | 銷售、採購、財務及外匯風險管理 |
-| 個人職責 | 需求分析、規則設計、資料整合、流程開發 |
-| 使用技術 | Python、Pandas、SQL、關聯式資料庫、自動排程 |
-| 處理規模 | 每月約 1.5 億美元 |
+| Business domain | Sales, procurement, finance, and FX risk management |
+| My role | Requirements analysis, rule design, data integration, workflow development |
+| Technology | Python, Pandas, SQL, relational databases, job scheduling |
+| Scale | Approximately USD 150 million in FX exposure per month |
 
-## 問題
+## Business Challenge
 
-外幣合約或採購單成立後，即產生匯率風險；後續金額異動、取消及發票立帳，皆會改變風險部位。原流程資料分散於多個系統，仰賴人工比對，容易發生漏拋、重複拋轉或結清不完整。
+FX exposure begins when a foreign-currency sales contract or purchase order is confirmed and continues until the corresponding receivable or payable is recognized. Changes in amount, cancellation, and invoicing alter the open position. Because the required data was distributed across systems, manual reconciliation created a risk of missing, duplicate, or incomplete position entries.
 
-## 作法
+## Approach
 
-1. 整合合約、採購、發票、匯率及既有部位資料。
-2. 統一日期、幣別、單號、項次與金額格式。
-3. 比對來源單據與既有部位，辨識新增、異動、取消及立帳事件。
-4. 依事件與風險期間決定金額、方向及適用匯率。
-5. 產生下游系統所需交易資料，並以唯一鍵防止重複寫入。
-6. 保存執行紀錄；資料缺漏或處理失敗時主動通知。
+1. Integrated contracts, purchase orders, invoices, exchange rates, and existing position data.
+2. Standardized dates, currencies, document numbers, line items, and amounts.
+3. Compared source transactions with open positions to identify new, changed, cancelled, and invoiced events.
+4. Applied event-specific rules for amount, direction, and exchange-rate selection.
+5. Generated downstream transaction records and used unique keys to prevent duplicate posting.
+6. Logged each run and issued notifications when data was missing or processing failed.
 
-## 業務規則
+## Business Rules
 
-| 業務事件 | 部位處理 |
+| Business event | Position treatment |
 |---|---|
-| 合約／採購單成立 | 建立部位 |
-| 金額或數量增加 | 補足差額 |
-| 金額或數量減少 | 沖回差額 |
-| 合約／採購單取消 | 結清剩餘部位 |
-| 發票立帳 | 依實際金額及會計匯率結清 |
-| 立帳後仍有差異 | 建立調整項，使部位歸零 |
+| Contract or purchase order confirmed | Open a position |
+| Amount or quantity increased | Add the difference |
+| Amount or quantity decreased | Reverse the difference |
+| Contract or purchase order cancelled | Settle the remaining position |
+| Invoice recognized | Settle using the actual amount and accounting rate |
+| Residual difference after invoicing | Create an adjustment to close the position |
 
-風險期間如下：
+Risk windows:
 
-- 銷售：外幣合約成立至應收帳款立帳。
-- 採購：外幣採購單成立至應付帳款立帳。
+- **Sales:** from foreign-currency contract confirmation to accounts receivable recognition
+- **Procurement:** from foreign-currency purchase order confirmation to accounts payable recognition
 
-部位評價與損益計算由既有系統負責；本專案負責風險事件判斷、資料整合與交易拋轉。
+The existing position-management platform performs valuation and P&L calculation. This project is responsible for event detection, data integration, and automated transaction posting.
 
-## 系統架構
+## Architecture
 
 ```mermaid
 flowchart TB
-    A["銷售／採購資料"] --> E["資料整合與事件判斷"]
-    B["發票／立帳資料"] --> E
-    C["市場匯率"] --> E
-    D["既有部位"] --> E
-    E --> F["交易轉換與檢核"]
-    F --> G["部位與損益管理系統"]
-    F --> H["執行紀錄與異常通知"]
+    A["Sales and procurement"] --> E["Data integration and event detection"]
+    B["Invoices and accounting"] --> E
+    C["Market exchange rates"] --> E
+    D["Existing positions"] --> E
+    E --> F["Transaction conversion and validation"]
+    F --> G["Position and P&L platform"]
+    F --> H["Run logs and exception alerts"]
 ```
 
-詳細資料流與事件設計請見 [系統架構](docs/architecture.md)。
+See the [detailed system architecture](docs/architecture_en.md) for component responsibilities and the FX event lifecycle.
 
-## 個人貢獻
+## My Contributions
 
-- 與風險管理單位定義風險範圍、事件及計算規則。
-- 協調銷售、採購、財務及資訊單位確認資料定義。
-- 建立跨系統資料擷取、清理、比對及轉換流程。
-- 設計結清、差異調整、重複寫入防護及異常通知機制。
-- 維護市場匯率資料的自動取得及完整性檢查。
+- Defined exposure scope, events, and calculation rules with the risk-management team.
+- Coordinated data definitions across sales, procurement, finance, and IT.
+- Built cross-system data extraction, cleansing, matching, and transformation workflows.
+- Designed settlement, residual adjustment, duplicate prevention, and exception handling.
+- Automated market-rate collection and completeness checks.
 
-## 成果
+## Key Outcomes
 
-- 支援每月約 **1.5 億美元**外匯風險自動處理。
-- 統一跨部門風險認定、匯率及結清規則。
-- 減少人工彙整與逐筆判斷，提高作業一致性。
-- 保留交易及執行紀錄，提升對帳與問題追溯效率。
+- Supports approximately **USD 150 million in FX exposure per month**.
+- Standardized exposure recognition, exchange-rate selection, and settlement rules across functions.
+- Reduced manual consolidation and transaction-by-transaction assessment.
+- Improved reconciliation and issue traceability through transaction and run logs.
 
-## 保密說明
+## Confidentiality
 
-本案例僅呈現去識別化的業務問題、處理邏輯與系統架構，不含公司原始資料、交易參數、連線資訊、內部資料表名稱及完整程式碼。
+This case study presents de-identified business logic and system architecture only. It excludes proprietary data, transaction parameters, connection details, internal table names, and complete source code.
