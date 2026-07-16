@@ -9,7 +9,7 @@ Built a standardized and auditable FX risk workflow that reflects sales, procure
 | Item | Description |
 |---|---|
 | Business domain | Sales, procurement, finance, and FX risk management |
-| My role | Requirements analysis, rule design, data integration, workflow development |
+| My role | User and operational needs clarification, rule design, data integration, workflow development |
 | Technology | Python, Pandas, SQL, relational databases, job scheduling |
 | Scale | Approximately USD 150 million in FX exposure per month |
 
