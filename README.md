@@ -2,7 +2,7 @@
 
 # FX Risk Position Automation
 
-Built a standardized and auditable FX risk workflow that reflects sales, procurement, and accounting events in position records, improving the accuracy of exposure recognition, settlement, and reconciliation. The system integrates contracts, purchase orders, invoices, market rates, and existing positions to automate position creation, adjustment, and settlement for approximately **USD 150 million in monthly FX exposure**.
+Built a standardized and auditable FX risk workflow that reflects sales, procurement, and accounting events in position records, improving the accuracy of exposure recognition, settlement, and reconciliation. The system integrates contracts, purchase orders, invoices, market rates, and existing positions to automate position creation, adjustment, and settlement, processing approximately **USD 100 million in FX-related transaction value per month**.
 
 ## Project Overview
 
@@ -11,7 +11,7 @@ Built a standardized and auditable FX risk workflow that reflects sales, procure
 | Business domain | Sales, procurement, finance, and FX risk management |
 | My role | User and operational needs clarification, rule design, data integration, workflow development |
 | Technology | Python, Pandas, SQL, relational databases, job scheduling |
-| Scale | Approximately USD 150 million in FX exposure per month |
+| Monthly processing volume | Approximately USD 100 million in FX-related transaction value processed through automated posting |
 
 ## Business Challenge
 
@@ -69,7 +69,7 @@ See the [detailed system architecture](docs/architecture_en.md) for component re
 
 ## Key Outcomes
 
-- Supports approximately **USD 150 million in FX exposure per month**.
+- Processes approximately **USD 100 million in FX-related transaction value per month** through automated posting.
 - Standardized exposure recognition, exchange-rate selection, and settlement rules across functions.
 - Reduced manual consolidation and transaction-by-transaction assessment.
 - Improved reconciliation and issue traceability through transaction and run logs.
