@@ -1,79 +1,74 @@
 **English** | [繁體中文](README_ZH-TW.md)
 
-# FX Risk Position Automation
+# Automated Pre-Recognition FX Risk Position Transfer System
 
-Built a standardized and auditable FX risk workflow that reflects sales, procurement, and accounting events in position records, improving the accuracy of exposure recognition, settlement, and reconciliation. The system integrates contracts, purchase orders, invoices, market rates, and existing positions to automate position creation, adjustment, and settlement, processing approximately **USD 100 million in FX-related transaction value per month**.
+## Objective
 
-## Project Overview
+Extend the FX risk management window from the recognition dates of accounts receivable and accounts payable back to the confirmation dates of foreign-currency sales contracts and purchases, enabling FX exposures that arise before accounting recognition to be identified, tracked, and managed.
 
-| Item | Description |
+Following the governance principle that business units should focus on core operations while FX risk is centrally managed by the risk management unit, the system automatically converts business information distributed across sales, procurement, and finance systems into standardized position transaction records. This establishes an end-to-end process spanning risk origination, position monitoring, and cross-functional position transfer.
+
+## Outcomes
+
+| Area | Project Outcome |
 |---|---|
-| Business domain | Sales, procurement, finance, and FX risk management |
-| My role | User and operational needs clarification, rule design, data integration, workflow development |
-| Technology | Python, Pandas, SQL, relational databases, job scheduling |
-| Monthly processing volume | Approximately USD 100 million in FX-related transaction value processed through automated posting |
+| Risk management coverage | Established a pre-recognition FX risk management mechanism covering USD- and EUR-denominated sales contracts, as well as USD-denominated purchases of steel coils, alloys, and other materials |
+| Automation scale | Transfers approximately USD 100 million in combined sales- and procurement-side transaction volume per month |
+| Operational automation | Automatically performs daily data integration, business event identification, transaction generation, and system posting; manual intervention is required only for exceptions |
+| Management framework | Supports both internal position and P&L monitoring within the business unit and centralized FX risk ownership by the risk management unit |
+| System reliability | Has operated reliably in production for more than four years |
 
-## Business Challenge
-
-FX exposure begins when a foreign-currency sales contract or purchase order is confirmed and continues until the corresponding receivable or payable is recognized. Changes in amount, cancellation, and invoicing alter the open position. Because the required data was distributed across systems, manual reconciliation created a risk of missing, duplicate, or incomplete position entries.
+> The approximately USD 100 million per month represents the combined position-transfer transaction volume across sales and procurement. It is not the outstanding FX position at a single point in time.
 
 ## Approach
 
-1. Integrated contracts, purchase orders, invoices, exchange rates, and existing position data.
-2. Standardized dates, currencies, document numbers, line items, and amounts.
-3. Compared source transactions with open positions to identify new, changed, cancelled, and invoiced events.
-4. Applied event-specific rules for amount, direction, and exchange-rate selection.
-5. Generated downstream transaction records and used unique keys to prevent duplicate posting.
-6. Logged each run and issued notifications when data was missing or processing failed.
+### 1. Translate Risk Management Principles into Executable Rules
 
-## Business Rules
+Worked with the risk management unit to define risk ownership, management periods, applicable currencies, and exchange-rate rules, then translated these cross-functional principles into consistent data conditions and transaction logic.
 
-| Business event | Position treatment |
-|---|---|
-| Contract or purchase order confirmed | Open a position |
-| Amount or quantity increased | Add the difference |
-| Amount or quantity decreased | Reverse the difference |
-| Contract or purchase order cancelled | Settle the remaining position |
-| Invoice recognized | Settle using the actual amount and accounting rate |
-| Residual difference after invoicing | Create an adjustment to close the position |
+For sales, the risk management period begins when a foreign-currency contract is confirmed and ends when the corresponding accounts receivable is recognized. For procurement, it begins when a foreign-currency purchase is confirmed and ends when the corresponding accounts payable is recognized.
 
-Risk windows:
+### 2. Build Business Event Identification and Transaction Conversion
 
-- **Sales:** from foreign-currency contract confirmation to accounts receivable recognition
-- **Procurement:** from foreign-currency purchase order confirmation to accounts payable recognition
+Integrated sales, procurement, accounting recognition, exchange-rate, and existing position data. Based on changes in business status and transaction amounts, the system automatically identifies position openings, amount adjustments, cancellations, and settlement upon accounting recognition, then converts each event into standardized position-transfer transaction records.
 
-The existing position-management platform performs valuation and P&L calculation. This project is responsible for event detection, data integration, and automated transaction posting.
+By managing the full risk lifecycle, the system continuously reflects business changes instead of retaining only a point-in-time position snapshot.
+
+### 3. Establish Parallel Outputs and Exception Management
+
+Once transaction records are generated, the system automatically writes them to two management endpoints in parallel:
+
+- PAS, enabling the business unit to monitor positions and P&L and complete month-end settlement.
+- RMD interface tables, transferring position information to the risk management unit.
+
+The system also retains execution logs and sends exception notifications, allowing daily processing to remain fully automated while operations staff intervene only when issues such as missing data or execution failures occur.
+
+> Terminology: PAS is an existing position management system that calculates positions and P&L from transaction records. RMD refers to the interface tables used to exchange position-transfer transaction information with the risk management unit.
 
 ## Architecture
 
 ```mermaid
 flowchart TB
-    A["Sales and procurement"] --> E["Data integration and event detection"]
-    B["Invoices and accounting"] --> E
-    C["Market exchange rates"] --> E
-    D["Existing positions"] --> E
-    E --> F["Transaction conversion and validation"]
-    F --> G["Position and P&L platform"]
-    F --> H["Run logs and exception alerts"]
+    A["Sales, procurement, and accounting recognition data"] --> D["Python transaction conversion layer"]
+    B["Spot and forward exchange rates"] --> D
+
+    D --> E["PAS: Position and P&L monitoring"]
+    D --> F["RMD: Position information transfer"]
+    D --> G["Execution logs and exception alerts"]
+
+    F --> H["Risk management unit"]
+    H --> I["Actual hedging transactions decided separately"]
 ```
 
-See the [detailed system architecture](docs/architecture_en.md) for component responsibilities and the FX event lifecycle.
+The Python transaction conversion layer is the core of the architecture. It is responsible for cross-system data integration, status-difference comparison, risk event identification, transaction generation, and data validation.
 
-## My Contributions
+PAS and RMD are parallel outputs. PAS supports internal position and P&L management within the business unit, while RMD serves as the interface through which the business unit transfers position information to the risk management unit. After the system completes the position information transfer, the risk management unit separately determines and executes the actual hedging strategy and transactions.
 
-- Defined exposure scope, events, and calculation rules with the risk-management team.
-- Coordinated data definitions across sales, procurement, finance, and IT.
-- Built cross-system data extraction, cleansing, matching, and transformation workflows.
-- Designed settlement, residual adjustment, duplicate prevention, and exception handling.
-- Automated market-rate collection and completeness checks.
+## Technology
 
-## Key Outcomes
-
-- Processes approximately **USD 100 million in FX-related transaction value per month** through automated posting.
-- Standardized exposure recognition, exchange-rate selection, and settlement rules across functions.
-- Reduced manual consolidation and transaction-by-transaction assessment.
-- Improved reconciliation and issue traceability through transaction and run logs.
-
-## Confidentiality
-
-This case study presents de-identified business logic and system architecture only. It excludes proprietary data, transaction parameters, connection details, internal table names, and complete source code.
+| Category | Technology / Tool | Project Application |
+|---|---|---|
+| Programming and data processing | Python | Cross-system data integration, event identification, amount calculation, and transaction generation |
+| Database integration | SQL Server, SQL | Reads business and accounting recognition data and writes interface data to PAS and RMD |
+| Web automation | Selenium | Automatically retrieves external forward exchange rates |
+| Scheduling and monitoring | Windows Task Scheduler, Teams | Runs the daily batch process and sends execution results and exception notifications |
