@@ -1,0 +1,9 @@
+[SWITCH]
+INTERNAL_SWITCH = True
+ALLOY_SWITCH = True
+COIL_SWITCH = True
+RMD_TABLE_SWITCH = True
+PAS_FORMAL = False
+PAS_UAT = True
+MM_CHANNEL = fx_test
+Area = Formal
