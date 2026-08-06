@@ -49,15 +49,15 @@ The system also maintains execution logs and sends exception alerts, enabling au
 
 ```mermaid
 flowchart TB
-    A["Sales and procurement data<br> A/R and A/P"] --> D["Python<br>Internal transaction-processing layer"]
+    A["Sales and procurement data<br> A/R and A/P"] --> D["Python<br>Internal FX<br> transaction-processing<br> layer"]
     B["Spot and forward FX rates"] --> D
 
-    D --> E["PAS<br>Internal position<br>P&L monitoring"]
-    D --> F["RMD<br>Internal transaction interface"]
-    D --> G["Execution logs<br>exception alerts"]
+    D --> E["PAS<br>Internal FX position<br>and P&L monitoring"]
+    D --> F["RMD<br>Internal FX transaction<br> interface"]
+    D --> G["Execution logs<br>and exception alerts"]
 
     F --> H["Risk management function"]
-    H -.-> I["External hedging decision and execution (separate process)"]
+    H -.-> I["External hedging decision<br> and execution<br> (separate process)"]
 ```
 
 The Python internal FX transaction-processing layer is the core of the architecture. It handles cross-system data integration, state-change comparison, business-event evaluation, transaction generation, and data validation.
